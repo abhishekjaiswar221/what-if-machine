@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { parse } from "partial-json";
 import QuestionForm from "./components/QuestionForm";
-import LoadingArchive from "./components/LoadingArchive";
+import LiveDocumentary from "./components/LiveDocumentary";
 import Documentary from "./components/Documentary";
 import HistorySidebar from "./components/HistorySidebar";
 import { streamScenario, fetchHistory, fetchScenario } from "./api/scenarios";
-import type { Scenario, HistoryItem } from "./types";
+import type { Scenario, HistoryItem, PartialScenario } from "./types";
 
 export default function App() {
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rawText, setRawText] = useState("");
+  const [partial, setPartial] = useState<PartialScenario | null>(null);
   const [scenario, setScenario] = useState<Scenario | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const rawTextRef = useRef("");
 
   useEffect(() => {
     fetchHistory().then(setHistory).catch(() => {});
@@ -23,13 +25,22 @@ export default function App() {
     setQuestion(q);
     setScenario(null);
     setError(null);
-    setRawText("");
+    setPartial(null);
+    rawTextRef.current = "";
     setLoading(true);
 
     await streamScenario(q, {
-      onDelta: (text) => setRawText((prev) => prev + text),
+      onDelta: (text) => {
+        rawTextRef.current += text;
+        try {
+          setPartial(parse(rawTextRef.current) as PartialScenario);
+        } catch {
+          // not enough valid JSON yet — keep showing the last good partial
+        }
+      },
       onResult: (result) => {
         setScenario(result);
+        setPartial(null);
         setLoading(false);
         fetchHistory().then(setHistory).catch(() => {});
       },
@@ -80,7 +91,7 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <LoadingArchive rawText={rawText} />
+              <LiveDocumentary partial={partial} question={question} />
             </motion.div>
           )}
 

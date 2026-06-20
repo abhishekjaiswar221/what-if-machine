@@ -61,3 +61,21 @@ export interface HistoryItem {
   divergencePoint: string;
   createdAt: string;
 }
+
+export interface PartialScenario {
+  title?: string;
+  premise?: string;
+  divergencePoint?: string;
+  timeline?: Partial<TimelineEvent>[];
+  headlines?: Partial<Headline>[];
+  economy?: {
+    globalGdpTrillions?: number;
+    summary?: string;
+    topEconomies?: Partial<TopEconomy>[];
+  };
+  famousPeople?: Partial<FamousPerson>[];
+  map?: {
+    summary?: string;
+    regions?: Partial<MapRegion>[];
+  };
+}
