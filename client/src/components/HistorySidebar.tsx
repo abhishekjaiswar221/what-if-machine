@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { HistoryItem } from "../types";
 
 interface HistorySidebarProps {
@@ -10,21 +11,41 @@ export default function HistorySidebar({ history, onSelect, currentId }: History
   if (!history.length) return null;
 
   return (
-    <aside className="history-sidebar">
-      <h2 className="history-title">Past Broadcasts</h2>
-      <ul className="history-list">
-        {history.map((h) => (
-          <li key={h._id}>
-            <button
-              className={`history-item ${h._id === currentId ? "active" : ""}`}
-              onClick={() => onSelect(h._id)}
+    <aside className="h-fit border-l border-border pl-6">
+      <h2 className="mt-0 font-mono text-[1.05rem] tracking-[0.06em] text-text-dim uppercase">
+        Past Broadcasts
+      </h2>
+      <motion.ul
+        className="m-0 flex list-none flex-col gap-2 p-0"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: { transition: { staggerChildren: 0.04 } },
+        }}
+      >
+        {history.map((h) => {
+          const active = h._id === currentId;
+          return (
+            <motion.li
+              key={h._id}
+              variants={{
+                hidden: { opacity: 0, x: 8 },
+                visible: { opacity: 1, x: 0 },
+              }}
             >
-              <span className="history-item-title">{h.title}</span>
-              <span className="history-item-question">{h.question}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+              <button
+                onClick={() => onSelect(h._id)}
+                className={`flex w-full flex-col gap-0.5 rounded-md border px-3 py-2.5 text-left font-[inherit] text-paper transition-colors duration-150 hover:bg-panel ${
+                  active ? "border-accent-dim bg-panel" : "border-transparent"
+                }`}
+              >
+                <span className="text-[0.85rem] font-semibold">{h.title}</span>
+                <span className="text-xs italic text-text-dim">{h.question}</span>
+              </button>
+            </motion.li>
+          );
+        })}
+      </motion.ul>
     </aside>
   );
 }

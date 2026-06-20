@@ -22,11 +22,17 @@ export default function QuestionForm({ onSubmit, disabled }: QuestionFormProps) 
   }
 
   return (
-    <form className="question-form" onSubmit={handleSubmit}>
-      <label htmlFor="question" className="question-label">
+    <form
+      className="mb-10 rounded-[10px] border border-border bg-panel p-6"
+      onSubmit={handleSubmit}
+    >
+      <label
+        htmlFor="question"
+        className="mb-2.5 block font-mono text-xs tracking-[0.08em] text-accent uppercase"
+      >
         Pose an impossible question
       </label>
-      <div className="question-row">
+      <div className="flex gap-2.5">
         <input
           id="question"
           type="text"
@@ -35,19 +41,24 @@ export default function QuestionForm({ onSubmit, disabled }: QuestionFormProps) 
           placeholder="What if..."
           disabled={disabled}
           autoComplete="off"
+          className="flex-1 rounded-md border border-border bg-[#0c0b09] px-4 py-3.5 font-[inherit] text-[1.05rem] text-paper outline-none focus:border-accent"
         />
-        <button type="submit" disabled={disabled || !question.trim()}>
+        <button
+          type="submit"
+          disabled={disabled || !question.trim()}
+          className="cursor-pointer rounded-md border-none bg-accent px-5 font-mono text-sm font-semibold tracking-[0.03em] text-[#1a0f06] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-50"
+        >
           {disabled ? "Compiling…" : "Run the Machine"}
         </button>
       </div>
-      <div className="examples">
+      <div className="mt-4 flex flex-wrap gap-2">
         {EXAMPLES.map((ex) => (
           <button
             type="button"
             key={ex}
-            className="example-chip"
             disabled={disabled}
             onClick={() => setQuestion(ex.replace(/^What if /, "").replace(/\?$/, ""))}
+            className="cursor-pointer rounded-full border border-border bg-transparent px-3.5 py-1.5 font-mono text-sm text-text-dim hover:border-accent hover:text-accent"
           >
             {ex}
           </button>

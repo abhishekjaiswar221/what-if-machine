@@ -19,11 +19,15 @@ export default function LoadingArchive({ rawText }: LoadingArchiveProps) {
   }, [rawText]);
 
   return (
-    <div className="loading-archive">
-      <div className="loading-archive-header">
-        <span className="rec-dot" /> ASSEMBLING ALTERNATE TIMELINE…
+    <div className="overflow-hidden rounded-[10px] border border-border bg-[#050505]">
+      <div className="flex items-center gap-2 border-b border-border px-4 py-2.5 font-mono text-xs tracking-[0.08em] text-accent">
+        <span className="h-2 w-2 animate-pulse-rec rounded-full bg-[#e64545]" /> ASSEMBLING
+        ALTERNATE TIMELINE…
       </div>
-      <pre className="loading-archive-text" ref={scrollRef}>
+      <pre
+        className="m-0 h-70 overflow-y-auto p-4 font-mono text-[0.78rem] leading-[1.6] wrap-break-word whitespace-pre-wrap text-[#7ed99a]"
+        ref={scrollRef}
+      >
         {rawText || "Initializing divergence engine..."}
       </pre>
     </div>
